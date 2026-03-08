@@ -100,44 +100,92 @@ function initFAQ() {
 // ===================================
 function initFormValidation() {
     const form = document.getElementById('enrollmentForm');
-    
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Reset errors
-            const errorElements = form.querySelectorAll('.form-error');
-            errorElements.forEach(el => el.style.display = 'none');
-            
-            const errorGroups = form.querySelectorAll('.form-group.error');
-            errorGroups.forEach(group => group.classList.remove('error'));
-            
-            // Validation rules
-            let isValid = true;
-            
-            // Full Name
-            const fullName = document.getElementById('fullName');
-            if (!fullName.value.trim()) {
-                showError(fullName, 'Please enter your full name');
-                isValid = false;
+    if (!form) return;
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Reset previous errors
+        const errorElements = form.querySelectorAll('.form-error');
+        errorElements.forEach(el => el.style.display = 'none');
+
+        const errorGroups = form.querySelectorAll('.form-group.error');
+        errorGroups.forEach(group => group.classList.remove('error'));
+
+        let isValid = true;
+
+        // Full Name validation
+        const fullName = document.getElementById('fullName');
+        if (!fullName.value.trim()) {
+            showError(fullName, 'Please enter your full name');
+            isValid = false;
+        }
+
+        // Email validation
+        const email = document.getElementById('email');
+        if (!email.value.trim()) {
+            showError(email, 'Please enter your email address');
+            isValid = false;
+        } else if (!isValidEmail(email.value)) {
+            showError(email, 'Please enter a valid email address');
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        const linkedin = document.getElementById('linkedin');
+
+        const formData = {
+            fullName: fullName.value.trim(),
+            email: email.value.trim(),
+            linkedin: linkedin ? linkedin.value.trim() : '',
+            _captcha: 'false'
+        };
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        }
+
+        // Send as a normal POST to the main Formsubmit endpoint (no /ajax),
+        // encoded like a regular HTML form, so it behaves exactly as expected.
+        const urlEncoded = new URLSearchParams(formData).toString();
+
+        fetch('https://formsubmit.co/whenshifthappens.pod@gmail.com', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            },
+            body: urlEncoded
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Submission failed');
             }
-            
-            // Email
-            const email = document.getElementById('email');
-            if (!email.value.trim()) {
-                showError(email, 'Please enter your email address');
-                isValid = false;
-            } else if (!isValidEmail(email.value)) {
-                showError(email, 'Please enter a valid email address');
-                isValid = false;
+            // We don't need the HTML thank-you page; just treat success as delivered.
+            return response.text();
+        })
+        .then(() => {
+            submitForm(form, formData);
+        })
+        .catch(() => {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
             }
-            
-            // If valid, submit form
-            if (isValid) {
-                submitForm(form);
+
+            let globalError = form.querySelector('.form-global-error');
+            if (!globalError) {
+                globalError = document.createElement('div');
+                globalError.className = 'form-global-error form-error';
+                form.prepend(globalError);
             }
+            globalError.textContent = 'Something went wrong while submitting. Please try again in a moment.';
+            globalError.style.display = 'block';
         });
-    }
+    });
 }
 
 function showError(input, message) {
@@ -160,20 +208,7 @@ function isValidEmail(email) {
     return re.test(email);
 }
 
-function submitForm(form) {
-    // Collect form data
-    const formData = {
-        fullName: document.getElementById('fullName').value,
-        email: document.getElementById('email').value,
-        linkedin: document.getElementById('linkedin').value,
-        timestamp: new Date().toISOString()
-    };
-    
-    // Store in localStorage (demo purposes)
-    const submissions = JSON.parse(localStorage.getItem('shiftApplications') || '[]');
-    submissions.push(formData);
-    localStorage.setItem('shiftApplications', JSON.stringify(submissions));
-    
+function submitForm(form, formData) {
     // Show success message
     const formCard = form.closest('.form-card');
     formCard.innerHTML = `

@@ -305,6 +305,20 @@ section {
     margin-bottom: 25px;
 }
 
+.hero-guests {
+    margin: 20px auto 35px;
+    max-width: 900px;
+}
+
+.hero-guests img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
 .hero-subtitle {
     font-size: 1.3rem;
     color: var(--text-secondary);

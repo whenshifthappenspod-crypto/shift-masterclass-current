@@ -27,7 +27,7 @@ The section appears **after the Benefits section** and **before the Enrollment f
 │                                                               │
 │  SHIFT Masterclass is powered by When Shift Happens,        │
 │  the #1 podcast for credible crypto conversations.          │
-│  No hype, no BS—just real insights from top builders        │
+│  No hype, no BS - just real insights from top builders      │
 │                                                               │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
