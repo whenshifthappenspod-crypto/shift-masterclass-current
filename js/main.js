@@ -132,30 +132,6 @@ function initFormValidation() {
                 isValid = false;
             }
             
-            // Profession
-            const profession = document.getElementById('profession');
-            if (!profession.value) {
-                showError(profession, 'Please select your profession');
-                isValid = false;
-            }
-            
-            // Experience
-            const experience = document.getElementById('experience');
-            if (!experience.value) {
-                showError(experience, 'Please select your experience level');
-                isValid = false;
-            }
-            
-            // Motivation
-            const motivation = document.getElementById('motivation');
-            if (!motivation.value.trim()) {
-                showError(motivation, 'Please tell us why you want to join');
-                isValid = false;
-            } else if (motivation.value.trim().length < 20) {
-                showError(motivation, 'Please provide at least 20 characters');
-                isValid = false;
-            }
-            
             // If valid, submit form
             if (isValid) {
                 submitForm(form);
@@ -189,10 +165,7 @@ function submitForm(form) {
     const formData = {
         fullName: document.getElementById('fullName').value,
         email: document.getElementById('email').value,
-        profession: document.getElementById('profession').value,
-        experience: document.getElementById('experience').value,
         linkedin: document.getElementById('linkedin').value,
-        motivation: document.getElementById('motivation').value,
         timestamp: new Date().toISOString()
     };
     
