@@ -1161,17 +1161,18 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 64px;
-    flex-wrap: wrap;
+    gap: 48px;
+    flex-wrap: nowrap;
 }
 
 .sponsor-logo {
-    height: 70px;
+    height: 158px;
     width: auto;
-    max-width: 200px;
+    max-width: 280px;
     object-fit: contain;
     opacity: 0.9;
     transition: opacity 0.2s ease;
+    flex-shrink: 1;
 }
 
 .sponsor-logo:hover {
@@ -1184,7 +1185,8 @@ section {
         gap: 36px;
     }
     .sponsor-logo {
-        height: 55px;
+        height: 120px;
+        max-width: 240px;
     }
 }
 
